@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Galeria de Imagens</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background-color: #333;
+        color: #fff;
+        font-family: Arial, sans-serif;
+      }
+
+      #container {
+        max-width: 794px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        border: 1px solid transparent;
+      }
+
+      table {
+        border-collapse: collapse;
+        margin: 0 auto;
+      }
+
+      td {
+        padding: 10px;
+        vertical-align: middle;
+        text-align: center;
+        border: 1px solid #ddd;
+      }
+
+      img {
+        display: block;
+        max-width: 80%;
+        height: auto;
+        margin: 0 auto;
+      }
+
+      .caption {
+        font-style: italic;
+        font-size: 12px;
+        text-align: center;
+      }
+
+      #input-container {
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="input-container">
+      <input type="file" id="imgInput" multiple>
+    </div>
+
+    <div id="container">
+      <table id="gallery">
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+
+    <script>
+      function handleFileSelect(event) {
+        const gallery = document.getElementById("gallery").getElementsByTagName("tbody")[0];
+        gallery.innerHTML = "";
+
+        for (let i = 0; i < event.target.files.length; i++) {
+          const file = event.target.files[i];
+          if (!file.type.startsWith("image/")) {
+            continue;
+          }
+
+          const reader = new FileReader();
+          reader.onload = function (event) {
+            const image = new Image();
+            image.src = event.target.result;
+
+            const captionInput = document.createElement("input");
+            captionInput.type = "text";
+            captionInput.className = "caption-input";
+            captionInput.placeholder = "Legenda da imagem";
+
+            const caption = document.createElement("p");
+            caption.className = "caption";
+            caption.appendChild(captionInput);
+
+            const row = Math.floor(i / 2);
+            const cell = i % 2;
+
+            if (!gallery.rows[row]) {
+              gallery.insertRow(row);
+            }
+
+            const galleryCell = gallery.rows[row].insertCell(cell);
+            galleryCell.appendChild(image);
+            galleryCell.appendChild(caption);
+          };
+          reader.readAsDataURL(file);
+        }
+      }
+
+      const inputElement = document.getElementById("imgInput");
+      inputElement.addEventListener("change", handleFileSelect, false);
+    </script>
+  </body>
+</html>
